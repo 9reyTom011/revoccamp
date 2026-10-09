@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Personal productivity dashboard with to-do list, focus timer, and quick links." />
+  <title>Life Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="header">
+    <div class="header__inner">
+
+      <!-- Greeting & Clock -->
+      <div class="header__greeting">
+        <div class="header__clock" id="clock" aria-live="polite" aria-label="Current time">00:00:00</div>
+        <div class="header__date" id="date"></div>
+        <div class="header__welcome">
+          <span id="greeting-text">Good day</span>,&nbsp;
+          <button
+            class="name-btn"
+            id="name-display-btn"
+            aria-label="Edit your display name"
+            title="Click to edit your name"
+          >
+            <span id="greeting-name">Friend</span>
+            <svg class="name-btn__icon" aria-hidden="true" focusable="false" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14.85 2.85a2 2 0 0 1 2.83 2.83L6.5 16.82l-3.8.95.95-3.8L14.85 2.85z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Inline name editor (hidden by default) -->
+        <div class="name-editor" id="name-editor" hidden>
+          <label for="name-input" class="sr-only">Your display name</label>
+          <input
+            type="text"
+            id="name-input"
+            class="name-editor__input"
+            placeholder="Enter your name…"
+            maxlength="40"
+            autocomplete="off"
+          />
+          <button class="btn btn--sm btn--primary" id="name-save-btn" aria-label="Save name">Save</button>
+          <button class="btn btn--sm btn--ghost" id="name-cancel-btn" aria-label="Cancel editing name">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Theme toggle -->
+      <div class="header__actions">
+        <button
+          class="theme-toggle"
+          id="theme-toggle"
+          aria-label="Toggle light/dark theme"
+          title="Toggle theme"
+        >
+          <!-- Moon icon (shown in dark mode) -->
+          <svg class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <!-- Sun icon (shown in light mode) -->
+          <svg class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+            <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="main">
+    <div class="dashboard-grid">
+
+      <!-- ---- FOCUS TIMER ---- -->
+      <section class="card timer-card" aria-labelledby="timer-heading">
+        <h2 class="card__title" id="timer-heading">Focus Timer</h2>
+        <p class="card__subtitle">Pomodoro · 25 min</p>
+
+        <div class="timer__display" aria-live="polite" aria-atomic="true">
+          <span id="timer-minutes">25</span><span class="timer__colon">:</span><span id="timer-seconds">00</span>
+        </div>
+
+        <div class="timer__status" id="timer-status" aria-live="polite"></div>
+
+        <div class="timer__controls" role="group" aria-label="Timer controls">
+          <button class="btn btn--primary btn--timer" id="timer-start" aria-label="Start timer">
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
+            Start
+          </button>
+          <button class="btn btn--secondary btn--timer" id="timer-stop" aria-label="Pause timer" disabled>
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/></svg>
+            Pause
+          </button>
+          <button class="btn btn--ghost btn--timer" id="timer-reset" aria-label="Reset timer">
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.36 2.64L3 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="3,3 3,8 8,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Reset
+          </button>
+        </div>
+      </section>
+
+      <!-- ---- TO-DO LIST ---- -->
+      <section class="card todo-card" aria-labelledby="todo-heading">
+        <div class="todo-card__header">
+          <h2 class="card__title" id="todo-heading">My Tasks</h2>
+          <div class="todo-stats" aria-live="polite" aria-atomic="true">
+            <span class="todo-stats__badge" id="todo-count-completed">0</span>
+            <span class="todo-stats__sep">/</span>
+            <span class="todo-stats__badge todo-stats__badge--total" id="todo-count-total">0</span>
+            <span class="todo-stats__label">done</span>
+          </div>
+        </div>
+
+        <!-- Add task form -->
+        <form class="todo-form" id="todo-form" novalidate aria-label="Add new task">
+          <div class="todo-form__row">
+            <label for="todo-input" class="sr-only">New task</label>
+            <input
+              type="text"
+              id="todo-input"
+              class="input todo-form__input"
+              placeholder="Add a new task…"
+              autocomplete="off"
+              maxlength="200"
+            />
+            <button type="submit" class="btn btn--primary" aria-label="Add task">
+              <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+              Add
+            </button>
+          </div>
+          <!-- Duplicate / validation message -->
+          <p class="todo-form__msg" id="todo-msg" role="alert" aria-live="assertive" hidden></p>
+        </form>
+
+        <!-- Task list -->
+        <ul class="todo-list" id="todo-list" aria-label="Task list"></ul>
+
+        <!-- Empty state -->
+        <div class="todo-empty" id="todo-empty" hidden>
+          <svg aria-hidden="true" focusable="false" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="12" y="8" width="40" height="48" rx="4" stroke="currentColor" stroke-width="2"/>
+            <line x1="22" y1="22" x2="42" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="22" y1="32" x2="38" y2="32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="22" y1="42" x2="34" y2="42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <p>No tasks yet. Add one above to get started.</p>
+        </div>
+      </section>
+
+      <!-- ---- QUICK LINKS ---- -->
+      <section class="card links-card" aria-labelledby="links-heading">
+        <h2 class="card__title" id="links-heading">Quick Links</h2>
+
+        <ul class="links-grid" id="links-list" aria-label="Quick links"></ul>
+
+        <!-- Add link form -->
+        <details class="add-link-details" id="add-link-details">
+          <summary class="add-link-summary" aria-label="Show form to add a custom link">
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+            Add Custom Link
+          </summary>
+
+          <form class="add-link-form" id="add-link-form" novalidate aria-label="Add custom link">
+            <div class="add-link-form__field">
+              <label for="link-title-input">Title</label>
+              <input
+                type="text"
+                id="link-title-input"
+                class="input"
+                placeholder="e.g. My Portfolio"
+                maxlength="60"
+                autocomplete="off"
+              />
+            </div>
+            <div class="add-link-form__field">
+              <label for="link-url-input">URL</label>
+              <input
+                type="url"
+                id="link-url-input"
+                class="input"
+                placeholder="https://example.com"
+                autocomplete="off"
+              />
+            </div>
+            <p class="add-link-form__msg" id="link-msg" role="alert" aria-live="assertive" hidden></p>
+            <div class="add-link-form__actions">
+              <button type="submit" class="btn btn--primary btn--sm">Save Link</button>
+              <button type="button" class="btn btn--ghost btn--sm" id="add-link-cancel">Cancel</button>
+            </div>
+          </form>
+        </details>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <p>Built for AWS CodingCamp &mdash; Life Dashboard</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
